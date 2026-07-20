@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FORGE — Abdelrhman Ahmed · Digital Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#0A0A0B;--bg2:#121014;--panel:#161418;--panel2:#1C191E;
+    --fire:#FF5A1F;--copper:#E8853A;--gold:#FFB347;
+    --metal:#9A9490;--white:#F5F0EA;
+    --line:rgba(255,90,31,.28);--line2:rgba(255,255,255,.08);
+    --en:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;--ar:'Tajawal',sans-serif;
+  }
+  body.light{
+    --bg:#FBF7F1;--bg2:#F3ECE2;--panel:#FFFFFF;--panel2:#F6EFE6;
+    --fire:#E24B12;--copper:#B5651C;--gold:#B5761F;
+    --metal:#7A7168;--white:#1A1512;
+    --line:rgba(226,75,18,.30);--line2:rgba(0,0,0,.10);
+  }
+  body.light .noise{opacity:.02}
+  body.light .molten{filter:saturate(1.1)}
+  .toggles{display:flex;align-items:center;gap:8px}
+  .tg{font-family:var(--en);font-size:12px;color:var(--metal);border:1px solid var(--line2);background:transparent;border-radius:100px;padding:8px 12px;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:6px;line-height:1}
+  .tg:hover{border-color:var(--fire);color:var(--fire)}
+  .tg .ic{width:15px;height:15px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--white);font-family:var(--body);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--fire);color:#0A0A0B}
+  a{color:inherit;text-decoration:none}
+  .ar{font-family:var(--ar);direction:rtl}
+  .en{font-family:var(--en)}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
+
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:90;background:radial-gradient(130% 100% at 50% 0%,transparent 60%,rgba(0,0,0,.6));mix-blend-mode:multiply}
+  .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.045;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .cur{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--fire);z-index:100;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 14px var(--fire);transition:width .3s,height .3s,opacity .3s}
+  .cur.big{width:46px;height:46px;background:rgba(255,90,31,.2);box-shadow:0 0 30px rgba(255,90,31,.4)}
+  @media(hover:none){.cur{display:none}}
+  #embers{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+  header{position:fixed;top:0;left:0;width:100%;z-index:50;transition:.5s;border-bottom:1px solid transparent}
+  header.on{background:rgba(10,10,11,.8);backdrop-filter:blur(16px);border-color:var(--line2)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;transition:.5s}
+  header.on .nav{padding:15px 0}
+  .logo{display:flex;align-items:center;gap:11px;font-family:var(--en);font-weight:700;font-size:21px;letter-spacing:.14em}
+  .logo .spark{width:10px;height:10px;border-radius:50%;background:var(--fire);box-shadow:0 0 14px var(--fire),0 0 30px rgba(255,90,31,.5);animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.6;transform:scale(.85)}50%{opacity:1;transform:scale(1.25)}}
+  .nlinks{display:flex;gap:30px;font-family:var(--en);font-size:13px;letter-spacing:.04em;color:var(--metal)}
+  .nlinks a{position:relative;transition:color .35s}
+  .nlinks a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:1px;background:var(--fire);transition:width .35s}
+  .nlinks a:hover{color:var(--white)}.nlinks a:hover::after{width:100%}
+  .nav-cta{font-family:var(--en);font-size:13px;padding:10px 20px;border:1px solid var(--fire);border-radius:100px;color:var(--fire);transition:.4s}
+  .nav-cta:hover{background:var(--fire);color:#0A0A0B}
+  .burger{display:none;color:var(--metal);font-family:var(--en);font-size:13px}
+
+  .hero{min-height:100vh;display:flex;align-items:center;position:relative;z-index:3;padding-top:90px}
+  .heat{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:800px;height:600px;background:radial-gradient(closest-side,rgba(255,90,31,.16),rgba(255,90,31,.05) 45%,transparent 70%);filter:blur(30px);z-index:-1;pointer-events:none}
+  .kick{font-family:var(--en);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--fire);display:flex;align-items:center;gap:14px;margin-bottom:30px}
+  .kick::before{content:"";width:40px;height:1px;background:var(--fire)}
+  .hero h1{font-family:var(--en);font-weight:700;font-size:clamp(52px,9.4vw,132px);line-height:.95;letter-spacing:-.02em}
+  .molten{background:linear-gradient(100deg,var(--gold),var(--fire) 40%,var(--copper) 70%,var(--gold));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:flow 5s linear infinite}
+  @keyframes flow{to{background-position:200% center}}
+  /* interactive forge word */
+  .forge-word{display:inline-block;cursor:default;transition:transform .15s ease-out;transform-style:preserve-3d;will-change:transform}
+  .hero .arline{font-family:var(--ar);direction:rtl;font-weight:700;font-size:clamp(22px,3.4vw,38px);color:var(--white);margin-top:14px;opacity:.92}
+  .hero .lede{max-width:520px;margin-top:26px;color:var(--metal);font-size:17px}
+  .hero .lede .ar{margin-top:8px;font-size:16px;color:#B8B2AC}
+  .btns{margin-top:40px;display:flex;gap:18px;flex-wrap:wrap}
+  .btn{font-family:var(--en);font-size:14px;letter-spacing:.03em;padding:16px 30px;border-radius:100px;display:inline-flex;align-items:center;gap:10px;transition:.4s;position:relative;overflow:hidden;cursor:pointer;border:none}
+  .btn.primary{background:var(--fire);color:#0A0A0B;font-weight:600;box-shadow:0 10px 40px rgba(255,90,31,.3)}
+  .btn.primary:hover{transform:translateY(-3px);box-shadow:0 16px 55px rgba(255,90,31,.5)}
+  .btn.line{border:1px solid var(--line2);color:var(--white)}
+  .btn.line:hover{border-color:var(--fire);color:var(--fire)}
+  .hero-foot{position:absolute;bottom:30px;left:0;width:100%}
+  .caps{display:flex;gap:26px;font-family:var(--en);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--metal);opacity:.7}
+  .caps span{display:flex;align-items:center;gap:9px}
+  .caps span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--fire)}
+
+  section{position:relative;z-index:3;padding:clamp(80px,12vw,150px) 0}
+  .lbl{font-family:var(--en);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--fire);display:flex;align-items:center;gap:13px;margin-bottom:28px}
+  .lbl .no{color:var(--metal);font-size:13px}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--fire),transparent);opacity:.4;position:relative;z-index:3}
+
+  .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,6vw,90px);align-items:center}
+  .about h2{font-family:var(--en);font-weight:600;font-size:clamp(30px,4.4vw,54px);line-height:1.06}
+  .about h2 em{font-style:normal;color:var(--fire)}
+  .about .name-ar{font-family:var(--ar);direction:rtl;color:var(--metal);font-size:15px;margin-top:8px}
+  .about p{color:var(--metal);font-size:16.5px;margin-bottom:20px}
+  .about p.ar{color:#B8B2AC}
+  .anvil{display:flex;justify-content:center;align-items:center;position:relative;min-height:220px}
+  .anvil svg{width:min(240px,60%);filter:drop-shadow(0 0 40px rgba(255,90,31,.3))}
+
+  .proj-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:48px}
+  .proj-head h2{font-family:var(--en);font-weight:600;font-size:clamp(30px,4.4vw,56px);line-height:1.03}
+  .proj-head .ar{font-family:var(--ar);direction:rtl;color:var(--metal);font-size:15px;margin-top:8px}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-bottom:26px}
+  .card{background:var(--panel);border:1px solid var(--line2);border-radius:18px;overflow:hidden;transition:transform .6s cubic-bezier(.19,1,.22,1),border-color .5s,box-shadow .5s;position:relative}
+  .card:hover{transform:translateY(-10px);border-color:var(--line);box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 1px var(--line)}
+  .preview{height:270px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .preview .glow{position:absolute;inset:0;opacity:0;transition:opacity .5s;background:radial-gradient(circle at 50% 40%,rgba(255,90,31,.2),transparent 60%)}
+  .card:hover .preview .glow{opacity:1}
+  .pv-sevelle{background:radial-gradient(120% 80% at 50% 20%,#1a130a,#0B0906)}
+  .pv-sevelle .name{font-family:'Space Grotesk',serif;font-size:34px;letter-spacing:.4em;padding-left:.4em;color:#E8D3A1;font-weight:400}
+  .pv-sevelle .hair{position:absolute;left:12%;right:12%;height:1px;background:rgba(201,169,106,.4)}
+  .pv-sevelle .h1{top:34%}.pv-sevelle .h2{bottom:34%}
+  .pv-aura{background:radial-gradient(circle at 50% 45%,#1a1030,#06060f)}
+  .pv-aura .orb{width:120px;height:120px;border-radius:50%;background:conic-gradient(from 0deg,#FFB347,#B98BFF,#5FE9E0,#FFB347);filter:blur(6px);animation:spin 8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .pv-aura .name{position:absolute;font-family:var(--en);font-size:26px;letter-spacing:.3em;color:#EAE7FF}
+  .pv-forge{background:radial-gradient(120% 90% at 50% 30%,#1c1310,#0A0A0B)}
+  .pv-forge .ic{font-family:var(--en);font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:var(--fire);display:flex;flex-direction:column;align-items:center;gap:14px}
+  .pv-forge .ic .m{font-size:11px;color:var(--metal);letter-spacing:.2em}
+  .pmeta{padding:24px 26px 28px}
+  .pmeta h3{font-family:var(--en);font-size:23px;font-weight:600;margin-bottom:5px}
+  .pmeta .sub{color:var(--metal);font-size:14px;margin-bottom:16px}
+  .pmeta .sub.ar{font-family:var(--ar);direction:rtl}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-family:var(--en);font-size:11px;letter-spacing:.05em;color:var(--copper);border:1px solid var(--line);border-radius:100px;padding:5px 12px}
+  .upcoming{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .upcoming .preview{height:150px}.upcoming .pmeta{padding:18px 22px 22px}.upcoming h3{font-size:18px}
+
+  .serv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px}
+  .serv{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line2);border-radius:16px;padding:34px 28px;transition:.5s;position:relative;overflow:hidden}
+  .serv::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fire),transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s}
+  .serv:hover{border-color:var(--line);transform:translateY(-6px)}.serv:hover::before{transform:scaleX(1)}
+  .serv .ic{width:44px;height:44px;margin-bottom:22px;color:var(--fire)}
+  .serv h3{font-family:var(--en);font-size:20px;font-weight:600;margin-bottom:6px}
+  .serv .h-ar{font-family:var(--ar);direction:rtl;color:var(--white);font-size:16px;margin-bottom:14px}
+  .serv p{color:var(--metal);font-size:14.5px;margin-bottom:20px}
+  .serv .from{font-family:var(--en);font-size:14px;color:var(--copper);border-top:1px solid var(--line2);padding-top:16px}
+
+  .contact{text-align:center}
+  .contact h2{font-family:var(--en);font-weight:700;font-size:clamp(40px,7vw,96px);line-height:1;letter-spacing:-.02em}
+  .contact .ar{font-family:var(--ar);direction:rtl;font-size:clamp(20px,3vw,30px);color:var(--white);margin-top:16px;font-weight:700}
+  .cbtns{margin-top:44px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .contact .info{margin-top:34px;display:flex;gap:28px;justify-content:center;flex-wrap:wrap;font-family:var(--en);font-size:14px;color:var(--metal)}
+  .contact .info a{transition:color .3s}.contact .info a:hover{color:var(--fire)}
+
+  footer{border-top:1px solid var(--line2);padding:40px 0;position:relative;z-index:3}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;font-family:var(--en);font-size:13px;color:var(--metal)}
+
+  .wa{position:fixed;bottom:26px;right:26px;z-index:55;width:60px;height:60px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(37,211,102,.4);transition:transform .3s,opacity .3s}
+  .wa.hide{opacity:0;pointer-events:none;transform:scale(.6)}
+  .wa:hover{transform:scale(1.1)}
+  .wa::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25D366;animation:ring 2s ease-out infinite}
+  @keyframes ring{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.7);opacity:0}}
+  .wa svg{width:32px;height:32px;fill:#fff}
+
+  .r{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.19,1,.22,1),transform .9s cubic-bezier(.19,1,.22,1)}
+  .r.in{opacity:1;transform:none}
+
+  /* ===== START-PROJECT TOOL (scoped under #start) ===== */
+  #start{background:linear-gradient(180deg,var(--bg),#0c0b0d)}
+  #start .tool-top{text-align:center;margin-bottom:34px}
+  #start .steps{display:flex;gap:8px;justify-content:center;margin:26px 0 40px;flex-wrap:wrap}
+  #start .step{font-family:var(--en);font-size:13px;color:var(--metal);padding:9px 18px;border:1px solid var(--line2);border-radius:100px;cursor:pointer;transition:.3s;background:var(--panel)}
+  #start .step.active{border-color:var(--fire);color:var(--white);background:rgba(255,90,31,.12)}
+  #start .step b{color:var(--fire);margin-inline-end:6px}
+  #start .block{display:none;animation:fade .5s ease}
+  #start .block.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  #start .tlbl{font-family:var(--en);font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--fire);display:flex;align-items:center;gap:12px;margin:8px 0 18px}
+  #start .tlbl::before{content:"";width:30px;height:1px;background:var(--fire)}
+  #start h2.sec{font-family:var(--ar);direction:rtl;font-weight:700;font-size:clamp(22px,3.6vw,32px);margin-bottom:6px}
+  #start .sub{font-family:var(--ar);direction:rtl;color:var(--metal);font-size:15px;margin-bottom:24px}
+  #start .pkgs{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:760px;margin:0 auto}
+  #start .ptype{display:flex;gap:8px;justify-content:center;margin:0 0 24px;flex-wrap:wrap}
+  #start .pt-btn{font-family:var(--ar);font-weight:700;font-size:14px;color:var(--metal);background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:10px 20px;cursor:pointer;transition:.3s}
+  #start .pt-btn:hover{border-color:var(--line)}
+  #start .pt-btn.active{background:var(--fire);border-color:var(--fire);color:#0A0A0B}
+  #start .standalone{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:16px 18px;margin-bottom:16px;direction:rtl}
+  #start .standalone .st-t{font-family:var(--ar);font-size:13px;color:var(--metal);margin-bottom:10px}
+  #start .st-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  #start .st-item{background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;text-align:center}
+  #start .st-item span{display:block;font-family:var(--ar);font-size:12.5px;color:#CFC9C2;margin-bottom:4px}
+  #start .st-item b{font-family:var(--en);font-size:15px;color:var(--copper)}
+  #start .freefeat{background:rgba(255,90,31,.08);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:20px;font-family:var(--ar);direction:rtl;font-size:13.5px;color:#E7DFD5}
+  #start .freefeat b{color:var(--gold)}
+  #start .subsub{font-family:var(--ar);direction:rtl;font-size:14px;color:var(--copper);font-weight:700;margin:6px 0 12px}
+  #start .pkg.hot{border-color:var(--fire);box-shadow:0 0 0 1px var(--fire),0 16px 44px rgba(255,90,31,.14)}
+  #start .pkg .ribbon{position:absolute;top:12px;left:12px;background:var(--fire);color:#0A0A0B;font-family:var(--ar);font-weight:700;font-size:11px;padding:4px 10px;border-radius:100px}
+  #start .opt-row.locked{opacity:.6;cursor:default;border-style:dashed;border-color:var(--line)}
+  #start .opt-row.locked .pr{color:var(--gold);font-family:var(--ar);font-size:12.5px}
+  #start .opt-row.locked .chk{background:var(--copper);border-color:var(--copper);color:#0A0A0B;font-weight:700}
+  #start .pkg{background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:26px 22px;cursor:pointer;transition:.4s;position:relative;overflow:hidden;direction:rtl}
+  #start .pkg:hover{transform:translateY(-5px);border-color:var(--line)}
+  #start .pkg.sel{border-color:var(--fire);box-shadow:0 0 0 1px var(--fire),0 20px 50px rgba(255,90,31,.15)}
+  #start .pkg.sel::before{content:"✓";position:absolute;top:14px;left:14px;width:26px;height:26px;border-radius:50%;background:var(--fire);color:#0A0A0B;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  #start .pkg .pn{font-family:var(--en);direction:ltr;font-size:14px;letter-spacing:.2em;color:var(--fire);text-transform:uppercase;margin-bottom:4px}
+  #start .pkg .pt{font-family:var(--ar);font-weight:700;font-size:18px;margin-bottom:14px}
+  #start .pkg .pp{font-family:var(--en);font-size:26px;font-weight:700;color:var(--white);margin-bottom:16px;direction:rtl}
+  #start .pkg .pp small{font-family:var(--ar);font-size:13px;color:var(--metal);font-weight:400}
+  #start .pkg ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  #start .pkg li{font-family:var(--ar);font-size:13.5px;color:#CFC9C2;padding-inline-start:22px;position:relative}
+  #start .pkg li::before{content:"";position:absolute;right:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--copper)}
+  #start .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:6px}
+  #start .opt-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.3s;direction:rtl}
+  #start .opt-row:hover{border-color:var(--line)}
+  #start .opt-row.sel{border-color:var(--fire);background:rgba(255,90,31,.08)}
+  #start .opt-row .nm{font-family:var(--ar);font-size:14.5px}
+  #start .opt-row .nm small{display:block;color:var(--metal);font-size:12px}
+  #start .opt-row .pr{font-family:var(--en);font-size:14px;color:var(--copper);white-space:nowrap}
+  #start .opt-row .chk{width:22px;height:22px;border-radius:6px;border:1px solid var(--line2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.3s}
+  #start .opt-row.sel .chk{background:var(--fire);border-color:var(--fire);color:#0A0A0B;font-weight:700}
+  #start .note{font-family:var(--ar);direction:rtl;font-size:13px;color:var(--metal);margin-top:16px;background:var(--panel);border:1px dashed var(--line2);border-radius:10px;padding:12px 16px}
+  #start .q{margin-bottom:28px;direction:rtl}
+  #start .q .qt{font-family:var(--ar);font-weight:700;font-size:16px;margin-bottom:12px}
+  #start .q .qt b{color:var(--fire);font-family:var(--en);margin-inline-end:8px}
+  #start .q .qt .req{color:var(--fire);font-size:13px}
+  #start .chips{display:flex;flex-wrap:wrap;gap:9px}
+  #start .chip{font-family:var(--ar);font-size:14px;padding:10px 18px;border:1px solid var(--line2);border-radius:100px;cursor:pointer;transition:.25s;background:var(--panel);user-select:none}
+  #start .chip:hover{border-color:var(--line)}
+  #start .chip.sel{background:var(--fire);border-color:var(--fire);color:#0A0A0B;font-weight:700}
+  #start input.txt,#start textarea.txt{width:100%;background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:14px 16px;color:var(--white);font-family:var(--ar);font-size:15px;transition:.3s;direction:rtl}
+  #start input.txt:focus,#start textarea.txt:focus{outline:none;border-color:var(--fire);background:var(--panel2)}
+  #start textarea.txt{min-height:90px;resize:vertical}
+  #start .q.err .qt{color:var(--fire)}
+  #start .q.err input.txt,#start .q.err textarea.txt{border-color:var(--fire)}
+  #start .navbtns{display:flex;justify-content:space-between;margin-top:30px;gap:12px}
+  #start .nb{font-family:var(--ar);font-weight:700;font-size:14px;padding:13px 26px;border-radius:100px;cursor:pointer;transition:.3s;border:none}
+  #start .nb.prev{background:transparent;border:1px solid var(--line2);color:var(--metal)}
+  #start .nb.prev:hover{color:var(--white);border-color:var(--white)}
+  #start .nb.next{background:var(--fire);color:#0A0A0B}
+  #start .nb.next:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,90,31,.35)}
+
+  .bar{position:fixed;bottom:0;left:0;width:100%;z-index:56;background:rgba(14,13,15,.94);backdrop-filter:blur(16px);border-top:1px solid var(--line);transform:translateY(120%);transition:transform .4s cubic-bezier(.19,1,.22,1)}
+  .bar.show{transform:none}
+  .bar-in{max-width:1200px;margin:0 auto;padding:14px clamp(20px,5vw,56px);display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .est .l{font-family:var(--ar);direction:rtl;font-size:12px;color:var(--metal)}
+  .est .v{font-family:var(--en);font-weight:700;font-size:24px;color:var(--gold)}
+  .est .v small{font-family:var(--ar);font-size:12px;color:var(--metal);font-weight:400}
+  .send{font-family:var(--ar);font-weight:700;font-size:15px;padding:14px 24px;border-radius:100px;border:none;background:#25D366;color:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.3s;white-space:nowrap}
+  .send:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,211,102,.4)}
+  .send svg{width:20px;height:20px;fill:#fff}
+  .send.copy{background:transparent;border:1px solid var(--line2);color:var(--white)}
+  .toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--panel);border:1px solid var(--fire);border-radius:100px;padding:12px 24px;font-weight:700;font-family:var(--ar);z-index:60;transition:.4s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:880px){
+    .nlinks,.nav-cta{display:none}.burger{display:block}
+    .about-grid{grid-template-columns:1fr;gap:40px}.anvil{order:-1}
+    .feat{grid-template-columns:1fr}.upcoming{grid-template-columns:1fr}.serv-grid{grid-template-columns:1fr}
+    .caps{flex-wrap:wrap;gap:14px 22px}
+    #start .pkgs{grid-template-columns:1fr}#start .opts{grid-template-columns:1fr}#start .st-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(min-width:881px) and (max-width:1150px){
+    #start .pkgs{grid-template-columns:1fr 1fr}
+    .est .v{font-size:19px}.send{padding:12px 16px;font-size:13px}.bar-in{gap:8px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}.r{opacity:1;transform:none;transition:none}.forge-word{transition:none}}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<canvas id="embers"></canvas>
+<div class="cur" id="cur" aria-hidden="true"></div>
+
+<header id="hdr">
+  <div class="wrap nav">
+    <a href="#top" class="logo"><span class="spark"></span>FORGE</a>
+    <nav class="nlinks">
+      <a href="#about" data-en="About" data-ar="عننا">About</a>
+      <a href="#work" data-en="Work" data-ar="الشغل">Work</a>
+      <a href="#services" data-en="Services" data-ar="الخدمات">Services</a>
+      <a href="#start" data-en="Start" data-ar="ابدأ مشروعك">ابدأ مشروعك</a>
+      <a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a>
+    </nav>
+    <div class="toggles">
+      <button class="tg" id="langBtn" aria-label="Language">EN</button>
+      <button class="tg" id="themeBtn" aria-label="Theme"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></button>
+      <a href="#start" class="nav-cta" data-en="Start a project" data-ar="ابدأ مشروعك">ابدأ مشروعك</a>
+    </div>
+    <div class="burger">Menu</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="heat"></div>
+  <div class="wrap">
+    <div class="kick" data-en="FORGE — Digital Studio" data-ar="فورج — استوديو رقمي">FORGE — Digital Studio</div>
+    <h1 data-en='We <span class="molten forge-word" id="forgeWord">forge</span><br>digital experiences.' data-ar='بنشكّل <span class="molten forge-word" id="forgeWord">تجارب</span><br>رقمية قوية.'>We <span class="molten forge-word" id="forgeWord">forge</span><br>digital experiences.</h1>
+    <div class="arline" data-en="We craft powerful digital experiences." data-ar="بنصنع ونشكّل تجارب رقمية قوية.">بنصنع ونشكّل تجارب رقمية قوية.</div>
+    <p class="lede" data-en="Premium websites, immersive 3D, and online stores — built with craft, made to stay in mind." data-ar="مواقع premium، تجارب 3D، ومتاجر — مبنية بإتقان، مصمّمة تفضل في البال.">Premium websites, immersive 3D, and online stores — built with craft, made to stay in mind.
+      <span class="ar" style="display:block">مواقع premium، تجارب 3D، ومتاجر — مبنية بإتقان، مصمّمة تفضل في البال.</span>
+    </p>
+    <div class="btns">
+      <a href="#work" class="btn primary" data-h data-en="See the work →" data-ar="شوف الشغل →">See the work →</a>
+      <a href="#start" class="btn line" data-h data-en="Start a project" data-ar="ابدأ مشروعك">ابدأ مشروعك</a>
+    </div>
+  </div>
+  <div class="hero-foot wrap">
+    <div class="caps"><span>Web Design</span><span>3D Experiences</span><span>Shopify</span><span>Framer</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about" class="about wrap">
+  <div class="lbl r"><span class="no">01</span> <span data-en="— About" data-ar="— عننا">— About</span></div>
+  <div class="about-grid">
+    <div class="r"><h2 data-en="The name behind <em>FORGE</em>." data-ar="الاسم اللي ورا <em>FORGE</em>.">The name behind <em>FORGE</em>.</h2><div class="name-ar">الاسم ورا FORGE — عبدالرحمن أحمد</div></div>
+    <div>
+      <p class="r">I'm Abdelrhman Ahmed, a web designer & developer. FORGE is built on one idea — a website isn't just pages, it's an experience shaped with craft, like iron in the forge.</p>
+      <p class="ar r">أنا عبدالرحمن أحمد، مصمّم ومطوّر مواقع. أسّست FORGE على فكرة واحدة: إن الموقع مش مجرد صفحات — ده تجربة بتتشكّل بإتقان زي الحديد في الورشة. بشتغل على المواقع الـ premium والتجارب الـ3D اللي بتخلّي البراند يفضل في بال الناس.</p>
+    </div>
+  </div>
+  <div class="anvil r" style="margin-top:60px">
+    <svg viewBox="0 0 200 130" role="img" aria-label="Forge anvil">
+      <defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset=".5" stop-color="#FF5A1F"/><stop offset="1" stop-color="#8a2e0e"/></linearGradient></defs>
+      <path d="M20 55 L80 55 Q95 55 100 45 L112 45 Q108 60 90 66 L90 74 L120 74 L120 66 Q150 66 150 45 L175 45 L175 60 Q175 78 140 82 L138 96 L150 96 Q160 96 160 106 L160 112 L40 112 L40 106 Q40 96 50 96 L60 96 L58 82 Q40 80 40 68 L20 68 Z" fill="url(#fg)"/>
+      <circle cx="150" cy="26" r="3" fill="#FFB347"><animate attributeName="cy" values="26;10;26" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/></circle>
+      <circle cx="140" cy="30" r="2" fill="#FF5A1F"><animate attributeName="cy" values="30;12;30" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2.6s" repeatCount="indefinite"/></circle>
+      <circle cx="160" cy="28" r="2" fill="#FFB347"><animate attributeName="cy" values="28;14;28" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2.2s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WORK -->
+<section id="work" class="wrap">
+  <div class="lbl r"><span class="no">02</span> <span data-en="— Selected Work" data-ar="— الشغل">— Selected Work</span></div>
+  <div class="proj-head"><div class="r"><h2 data-en="Things I've forged." data-ar="مختارات من شغلي.">Things I've forged.</h2><div class="ar">مختارات من الشغل</div></div></div>
+  <div class="feat">
+    <article class="card r" data-h>
+      <div class="preview pv-sevelle"><div class="hair h1"></div><div class="name">SÉVELLE</div><div class="hair h2"></div><div class="glow"></div></div>
+      <div class="pmeta"><h3>SÉVELLE</h3><div class="sub">Luxury Fragrance Brand</div><div class="sub ar">موقع premium لبراند عطور — ذهبي على أسود وأنيميشن سكرول ناعم.</div><div class="tags"><span class="tag">Web Design</span><span class="tag">Framer</span><span class="tag">Animation</span></div></div>
+    </article>
+    <article class="card r" data-h>
+      <div class="preview pv-aura"><div class="orb"></div><div class="name">AURA</div><div class="glow"></div></div>
+      <div class="pmeta"><h3>AURA</h3><div class="sub">Immersive 3D Experience</div><div class="sub ar">تجربة 3D تفاعلية بمجسم بيتحرّك مع الماوس. مبنية بـ Three.js.</div><div class="tags"><span class="tag">3D</span><span class="tag">Three.js</span><span class="tag">Interactive</span></div></div>
+    </article>
+  </div>
+  <div class="upcoming">
+    <article class="card r" data-h><div class="preview pv-forge"><div class="ic">🍽<span class="m">Restaurant</span></div><div class="glow"></div></div><div class="pmeta"><h3>Restaurant Site</h3><div class="sub ar">منيو + طلب واتساب</div><div class="tags"><span class="tag">Framer</span><span class="tag">CMS</span></div></div></article>
+    <article class="card r" data-h><div class="preview pv-forge"><div class="ic">◈<span class="m">3D Product</span></div><div class="glow"></div></div><div class="pmeta"><h3>3D Product Viewer</h3><div class="sub ar">منتج بيتقلّب بالماوس</div><div class="tags"><span class="tag">Spline</span><span class="tag">3D</span></div></div></article>
+    <article class="card r" data-h><div class="preview pv-forge"><div class="ic">▲<span class="m">Landing</span></div><div class="glow"></div></div><div class="pmeta"><h3>Product Landing</h3><div class="sub ar">صفحة هبوط لمنتج/كورس</div><div class="tags"><span class="tag">Framer</span><span class="tag">Conversion</span></div></div></article>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICES -->
+<section id="services" class="wrap">
+  <div class="lbl r"><span class="no">03</span> <span data-en="— Services" data-ar="— الخدمات">— Services</span></div>
+  <div class="proj-head"><div class="r"><h2 data-en="What I build." data-ar="بنقدّم إيه.">What I build.</h2><div class="ar">بنقدّم إيه</div></div></div>
+  <div class="serv-grid">
+    <div class="serv r" data-h><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 8h20M6 12h6"/></svg><h3>Premium Websites</h3><div class="h-ar">مواقع premium</div><p>Landing pages, business sites & company sites — polished, fast, and responsive.</p><div class="from">From 3,000 EGP</div></div>
+    <div class="serv r" data-h><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v20M3 7l9 5 9-5"/></svg><h3>3D Experiences</h3><div class="h-ar">تجارب 3D</div><p>Interactive 3D elements & immersive scenes that make a brand unforgettable.</p><div class="from">From 10,000 EGP</div></div>
+    <div class="serv r" data-h><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18l-2 12H5z"/><path d="M3 6l-1-3M9 11v4M15 11v4"/></svg><h3>Online Stores</h3><div class="h-ar">متاجر إلكترونية</div><p>Full Shopify stores with payments & inventory, ready to sell from day one.</p><div class="from">From 15,000 EGP</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== START YOUR PROJECT (integrated tool) ===== -->
+<section id="start">
+  <div class="wrap">
+    <div class="lbl r" style="justify-content:center"><span class="no">04</span> <span data-en="— Start your project" data-ar="— ابدأ مشروعك">— Start your project</span></div>
+    <div class="tool-top r">
+      <h2 class="sec" style="font-size:clamp(28px,5vw,48px)" data-en='Let&apos;s <span class="molten">shape</span> your project' data-ar='يلا <span class="molten">نشكّل</span> مشروعك'>يلا <span class="molten">نشكّل</span> مشروعك</h2>
+      <div class="sub" style="max-width:560px;margin:12px auto 0">اختار باقتك، حدّد اللي محتاجه، وجاوب كام سؤال — وفي الآخر ابعتلي كل حاجة على واتساب بضغطة زرار.</div>
+    </div>
+
+    <div class="steps">
+      <div class="step active" data-go="0"><b>01</b> <span data-en="Packages" data-ar="الباقات">الباقات</span></div>
+      <div class="step" data-go="1"><b>02</b> <span data-en="Add-ons" data-ar="إضافات وتصميمات">إضافات وتصميمات</span></div>
+      <div class="step" data-go="2"><b>03</b> <span data-en="Brief" data-ar="بريف المشروع">بريف المشروع</span></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="block show" data-step="0">
+      <div class="tlbl">Packages</div>
+      <h2 class="sec">اختار باقتك</h2>
+      <div class="sub">الباقة بتوفّر عليك كتير — لأن سعر الإضافات لو اتجمعت لوحدها بيبقى أغلى.</div>
+
+      <!-- standalone prices -->
+      <div class="standalone">
+        <div class="st-t">أسعار مفردة — لو عايز حاجة واحدة بس:</div>
+        <div class="st-grid">
+          <div class="st-item"><span>موقع عادي / لاندنج</span><b>من 3,000</b></div>
+          <div class="st-item"><span>موقع متعدد الصفحات</span><b>من 7,000</b></div>
+          <div class="st-item"><span>موقع 3D</span><b>من 12,000</b></div>
+          <div class="st-item"><span>متجر إلكتروني</span><b>من 14,000</b></div>
+        </div>
+      </div>
+
+      <div class="freefeat">
+        🎁 <b>مجاناً في كل الباقات:</b> زرار واتساب ذكي · أنيميشن سكرول · تصميم responsive · حماية SSL · ربط سوشيال ميديا
+      </div>
+
+      <div class="ptype">
+        <button class="pt-btn active" data-type="landing">لاندنج</button>
+        <button class="pt-btn" data-type="multi">موقع متعدد الصفحات</button>
+        <button class="pt-btn" data-type="store">متجر / 3D</button>
+      </div>
+
+      <div class="pkgs">
+        <!-- LANDING -->
+        <div class="pkg" data-type="landing" data-pkg="SPARK — لاندنج" data-price="4000" data-includes="darkmode,counters,thankyou">
+          <div class="pn">Spark</div><div class="pt">لاندنج — أساسي</div><div class="pp">4,000 <small>جنيه</small></div>
+          <ul><li>صفحة واحدة premium</li><li>Dark / Light mode</li><li>عدّادات متحركة</li><li>صفحة "شكراً"</li><li>+ المميزات المجانية</li></ul>
+        </div>
+        <div class="pkg hot" data-type="landing" data-pkg="BLAZE — لاندنج + كل الإضافات" data-price="6500" data-includes="darkmode,bilingual,counters,gallery,qr,map,thankyou,testimonials,pwa,analytics">
+          <div class="ribbon">الأوفر 🔥</div>
+          <div class="pn">Blaze</div><div class="pt">لاندنج — كل حاجة</div><div class="pp">6,500 <small>جنيه</small></div>
+          <ul><li>لاندنج بكل مميزات الـ VIP</li><li>Dark mode + عربي/إنجليزي</li><li>QR + خريطة + معرض</li><li>عدّادات + شهادات + PWA</li><li>صفحة شكر + Analytics</li><li style="color:var(--gold)">وفّر أكتر من 1,500 جنيه</li></ul>
+        </div>
+        <!-- MULTI -->
+        <div class="pkg" data-type="multi" data-pkg="FORGE — موقع متعدد الصفحات" data-price="9000" data-includes="darkmode,bilingual,counters,gallery,map,thankyou" style="display:none">
+          <div class="pn">Forge</div><div class="pt">موقع متعدد الصفحات — أساسي</div><div class="pp">9,000 <small>جنيه</small></div>
+          <ul><li>حتى 5 صفحات</li><li>لوحة تعديل (CMS)</li><li>عربي/إنجليزي + معرض</li><li>Dark mode + عدّادات</li></ul>
+        </div>
+        <div class="pkg hot" data-type="multi" data-pkg="PRIME — موقع متعدد الصفحات + كل الإضافات" data-price="12000" data-includes="darkmode,bilingual,counters,gallery,qr,map,thankyou,testimonials,pwa,analytics,extrapage,logo,content" style="display:none">
+          <div class="ribbon">الأوفر 🔥</div>
+          <div class="pn">Prime</div><div class="pt">موقع متعدد الصفحات — كل حاجة</div><div class="pp">12,000 <small>جنيه</small></div>
+          <ul><li>موقع كامل + CMS</li><li>صفحة إضافية + معرض بفلاتر</li><li>عربي/إنجليزي + Dark mode</li><li>عدّادات + شهادات + PWA</li><li>QR + خريطة + Analytics</li><li style="color:var(--gold)">وفّر آلاف الجنيهات</li></ul>
+        </div>
+        <!-- STORE / 3D -->
+        <div class="pkg" data-type="store" data-pkg="INFERNO — متجر / 3D" data-price="18000" data-includes="darkmode,bilingual,counters,gallery,qr,map,thankyou,testimonials,pwa,analytics,payment" style="display:none">
+          <div class="pn">Inferno</div><div class="pt">متجر / 3D — أساسي</div><div class="pp">18,000 <small>جنيه</small></div>
+          <ul><li>متجر Shopify أو تجربة 3D</li><li>ربط دفع (Paymob)</li><li>كل المميزات</li><li>تدريب على الاستخدام</li><li>دعم أول شهر</li></ul>
+        </div>
+        <div class="pkg hot" data-type="store" data-pkg="TITAN — متجر / 3D + كل الإضافات" data-price="24000" data-includes="darkmode,bilingual,counters,gallery,qr,map,thankyou,testimonials,pwa,analytics,payment,booking,logo,content,element3d,domain" style="display:none">
+          <div class="ribbon">الأوفر 🔥</div>
+          <div class="pn">Titan</div><div class="pt">متجر / 3D — كل حاجة</div><div class="pp">24,000 <small>جنيه</small></div>
+          <ul><li>متجر/3D + دفع + حجز</li><li>عنصر 3D + لوجو + محتوى</li><li>دومين + استضافة</li><li>كل مميزات الـ VIP</li><li>تدريب + دعم</li><li style="color:var(--gold)">وفّر آلاف الجنيهات</li></ul>
+        </div>
+      </div>
+      <div class="navbtns"><span></span><button class="nb next" data-next data-en="Next: Add-ons →" data-ar="التالي: إضافات وتصميمات →">التالي: إضافات وتصميمات →</button></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="block" data-step="1">
+      <div class="tlbl">Extra services</div>
+      <h2 class="sec">خدمات إضافية</h2>
+      <div class="sub">زوّد أي حاجة محتاجها — السعر بيتحسب لوحده تحت.</div>
+      <div class="subsub">✨ لمسات تبهر العميل — بسيطة وسعرها رمزي:</div>
+      <div class="opts" id="addons">
+        <div class="opt-row" data-id="darkmode" data-name="Dark / Light mode" data-price="400"><div class="nm">Dark / Light mode <small>وضع ليلي ونهاري</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">400</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="bilingual" data-name="عربي / إنجليزي" data-price="600"><div class="nm">عربي / إنجليزي <small>تبديل اللغة بضغطة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">600</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="counters" data-name="عدّادات متحركة" data-price="300"><div class="nm">عدّادات متحركة <small>الأرقام بتعدّ لوحدها</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">300</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="gallery" data-name="معرض صور بفلاتر" data-price="500"><div class="nm">معرض صور بفلاتر</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">500</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="qr" data-name="QR Code للموقع" data-price="300"><div class="nm">QR Code للموقع <small>كود يفتح الموقع</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">300</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="map" data-name="خريطة جوجل" data-price="300"><div class="nm">خريطة جوجل مدمجة</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">300</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="thankyou" data-name="صفحة شكراً" data-price="300"><div class="nm">صفحة "شكراً" أنيقة</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">300</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="testimonials" data-name="شهادات عملاء متحركة" data-price="400"><div class="nm">شهادات عملاء متحركة</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">400</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="pwa" data-name="PWA (يتثبّت كتطبيق)" data-price="700"><div class="nm">PWA <small>يتثبّت على الموبايل كتطبيق</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">700</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="analytics" data-name="Google Analytics" data-price="400"><div class="nm">Google Analytics <small>إحصائيات الزوار</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">400</span><span class="chk"></span></div></div>
+      </div>
+
+      <div class="subsub" style="margin-top:26px">🛠️ خدمات أكبر:</div>
+      <div class="opts" id="services2">
+        <div class="opt-row" data-id="extrapage" data-name="صفحة إضافية" data-price="1200"><div class="nm">صفحة إضافية</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">1,200</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="logo" data-name="تصميم لوجو" data-price="1500"><div class="nm">تصميم لوجو</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">1,500</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="content" data-name="كتابة المحتوى" data-price="1000"><div class="nm">كتابة المحتوى <small>نصوص احترافية</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">1,000</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="booking" data-name="نظام حجز مواعيد" data-price="3500"><div class="nm">نظام حجز مواعيد</div><div style="display:flex;align-items:center;gap:12px"><span class="pr">3,500</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="payment" data-name="ربط دفع أونلاين" data-price="2500"><div class="nm">ربط دفع أونلاين <small>Paymob / Kashier</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">2,500</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="element3d" data-name="عنصر 3D (Spline)" data-price="6000"><div class="nm">عنصر 3D <small>مجسم تفاعلي</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">6,000</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="super3d" data-name="تجربة 3D خارقة (Three.js)" data-price="25000"><div class="nm">تجربة 3D خارقة <small>مستوى VIP بالكود</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">من 25,000</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="domain" data-name="دومين + استضافة (سنة)" data-price="800"><div class="nm">دومين + استضافة <small>لمدة سنة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">800</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-id="maintenance" data-name="صيانة شهرية" data-price="800"><div class="nm">صيانة شهرية <small>تعديلات ومتابعة / شهر</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">800</span><span class="chk"></span></div></div>
+      </div>
+
+      <div class="tlbl" style="margin-top:38px">Print design</div>
+      <h2 class="sec">تصميم مطبوعات</h2>
+      <div class="sub">أصمّم لك الهوية الورقية جاهزة للطباعة — <b style="color:var(--copper)">التصميم فقط، الطباعة على حضرتك</b>.</div>
+      <div class="opts" id="printing">
+        <div class="opt-row" data-name="تصميم كارت شخصي" data-price="700"><div class="nm">تصميم كارت شخصي <small>تصميم فقط — من غير طباعة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">700</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-name="تصميم فلاير A5" data-price="900"><div class="nm">تصميم فلاير A5 <small>تصميم فقط — من غير طباعة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">900</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-name="تصميم رول أب بانر" data-price="900"><div class="nm">تصميم رول أب بانر <small>تصميم فقط — من غير طباعة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">900</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-name="تصميم منيو" data-price="1200"><div class="nm">تصميم منيو <small>تصميم فقط — من غير طباعة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">1,200</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-name="تصميم بروشور" data-price="1500"><div class="nm">تصميم بروشور <small>تصميم فقط — من غير طباعة</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">1,500</span><span class="chk"></span></div></div>
+        <div class="opt-row" data-name="باكدج هوية كاملة" data-price="3500"><div class="nm">باكدج هوية بصرية كاملة <small>لوجو + كارت + سوشيال — تصميم فقط</small></div><div style="display:flex;align-items:center;gap:12px"><span class="pr">3,500</span><span class="chk"></span></div></div>
+      </div>
+      <div class="note">🎨 كل الأسعار دي <b>للتصميم فقط</b> — بسلّمك الملفات جاهزة للطباعة (PDF / عالي الجودة)، والطباعة بتعملها في أي مطبعة.</div>
+
+      <div class="navbtns"><button class="nb prev" data-prev data-en="← Back" data-ar="← رجوع">← رجوع</button><button class="nb next" data-next data-en="Next: Brief →" data-ar="التالي: البريف →">التالي: البريف →</button></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="block" data-step="2">
+      <div class="tlbl">Project brief</div>
+      <h2 class="sec">بريف المشروع</h2>
+      <div class="sub">جاوب الأسئلة دي عشان أفهم مشروعك بالظبط.</div>
+
+      <div class="q" data-q="نوع المشروع" data-mode="single"><div class="qt"><b>01</b> نوع المشروع؟</div><div class="chips"><span class="chip">Landing</span><span class="chip">موقع تعريفي</span><span class="chip">مطعم / كافيه</span><span class="chip">عيادة</span><span class="chip">براند لبس</span><span class="chip">متجر</span><span class="chip">موقع 3D</span><span class="chip">أخرى</span></div></div>
+      <div class="q" data-q="اسم المشروع"><div class="qt"><b>02</b> اسم المشروع / البراند؟</div><input class="txt" data-field placeholder="اكتب اسم المشروع هنا..."/></div>
+      <div class="q" data-q="اللوجو" data-mode="single"><div class="qt"><b>03</b> اللوجو؟</div><div class="chips"><span class="chip">عندي لوجو جاهز</span><span class="chip">عايز تصميم لوجو</span></div></div>
+      <div class="q" data-q="الطابع" data-mode="multi"><div class="qt"><b>04</b> الطابع اللي تحبه؟ <span style="font-weight:400;color:var(--metal);font-size:13px">(اختار اللي يعجبك)</span></div><div class="chips"><span class="chip">فخم</span><span class="chip">عصري</span><span class="chip">بسيط</span><span class="chip">جريء</span><span class="chip">ناعم</span><span class="chip">تقني</span><span class="chip">حيوي / ملوّن</span></div></div>
+      <div class="q" data-q="الألوان المفضلة"><div class="qt"><b>05</b> ألوان مفضلة؟</div><input class="txt" data-field placeholder="مثلاً: أسود وذهبي، أو أزرق فاتح..."/></div>
+      <div class="q" data-q="الصفحات المطلوبة" data-mode="multi"><div class="qt"><b>06</b> الصفحات المطلوبة؟</div><div class="chips"><span class="chip">الرئيسية</span><span class="chip">من نحن</span><span class="chip">الخدمات</span><span class="chip">المنيو</span><span class="chip">معرض صور</span><span class="chip">الحجز</span><span class="chip">التواصل</span><span class="chip">المدونة</span><span class="chip">المتجر</span></div></div>
+      <div class="q" data-q="المميزات" data-mode="multi"><div class="qt"><b>07</b> مميزات محتاجها؟</div><div class="chips"><span class="chip">زرار واتساب</span><span class="chip">فورم حجز</span><span class="chip">خرائط جوجل</span><span class="chip">دفع أونلاين</span><span class="chip">عربي وإنجليزي</span><span class="chip">عنصر 3D</span><span class="chip">أنيميشن متقدم</span><span class="chip">تسجيل دخول</span></div></div>
+      <div class="q" data-q="المحتوى" data-mode="single"><div class="qt"><b>08</b> المحتوى (نصوص وصور)؟</div><div class="chips"><span class="chip">جاهز عندي</span><span class="chip">محتاج مساعدة</span></div></div>
+      <div class="q" data-q="اللغة" data-mode="single"><div class="qt"><b>09</b> لغة الموقع؟</div><div class="chips"><span class="chip">عربي</span><span class="chip">إنجليزي</span><span class="chip">الاتنين</span></div></div>
+      <div class="q" data-q="الموعد" data-mode="single"><div class="qt"><b>10</b> الموعد المطلوب؟</div><div class="chips"><span class="chip">عادي</span><span class="chip">مستعجل</span></div></div>
+      <div class="q" data-q="الاسم"><div class="qt"><b>11</b> اسمك؟ <span class="req">*</span></div><input class="txt" data-field data-req placeholder="اسمك..."/></div>
+      <div class="q" data-q="رقم الموبايل"><div class="qt"><b>12</b> رقم موبايلك؟ <span class="req">*</span></div><input class="txt" data-field data-req placeholder="01xxxxxxxxx" inputmode="tel"/></div>
+      <div class="q" data-q="تفاصيل إضافية"><div class="qt"><b>13</b> أي تفاصيل تانية عايز تقولهالي؟</div><textarea class="txt" data-field placeholder="اكتب أي حاجة في بالك..."></textarea></div>
+
+      <div class="navbtns"><button class="nb prev" data-prev data-en="← Back" data-ar="← رجوع">← رجوع</button><span></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="contact wrap">
+  <div class="lbl r" style="justify-content:center"><span class="no">05</span> <span data-en="— Contact" data-ar="— تواصل">— Contact</span></div>
+  <h2 class="r" data-en='Let&apos;s forge<br><span class="molten">something.</span>' data-ar='يلا <span class="molten">نشكّل</span><br>حاجة.'>Let's forge<br><span class="molten">something.</span></h2>
+  <div class="ar r">عندك مشروع؟ يلا نشكّله.</div>
+  <div class="cbtns r">
+    <a href="https://wa.me/201555014989" target="_blank" rel="noopener" class="btn primary" data-h>WhatsApp — 01555014989</a>
+    <a href="mailto:abdelrhmanahmed5120@gmail.com" class="btn line" data-h>Email me</a>
+  </div>
+  <div class="info r"><a href="tel:+201555014989">+20 155 501 4989</a><a href="mailto:abdelrhmanahmed5120@gmail.com">abdelrhmanahmed5120@gmail.com</a></div>
+</section>
+
+<footer>
+  <div class="wrap foot"><div class="logo" style="font-size:17px"><span class="spark"></span>FORGE</div><div><span data-en="© 2026 Abdelrhman Ahmed — Forging digital experiences." data-ar="© 2026 عبدالرحمن أحمد — بنصنع تجارب رقمية.">© 2026 Abdelrhman Ahmed — Forging digital experiences.</span></div></div>
+</footer>
+
+<a class="wa" id="waFloat" href="https://wa.me/201555014989" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.6.2-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.9-1.6-4-3.5-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5s-.6-1.5-.9-2c-.2-.5-.4-.4-.6-.5h-.5c-.2 0-.5.1-.7.3-.7.7-1 1.6-1 2.7 0 .8.3 1.6.5 1.8.2.3 2.5 3.9 6 5.3 2.5 1 3 .8 3.5.8.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.6-.4zM12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg>
+</a>
+
+<!-- estimate bar (shows only inside #start) -->
+<div class="bar" id="estBar">
+  <div class="bar-in">
+    <div class="est"><div class="l" data-en="Estimated total" data-ar="التقدير المبدئي">التقدير المبدئي</div><div class="v" id="total">0 <small>جنيه</small></div></div>
+    <div style="display:flex;gap:10px">
+      <button class="send copy" id="copyBtn" data-en="Copy" data-ar="نسخ الطلب">نسخ الطلب</button>
+      <button class="send" id="sendBtn"><svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.6.2-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.9-1.6-4-3.5-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5s-.6-1.5-.9-2c-.2-.5-.4-.4-.6-.5h-.5c-.2 0-.5.1-.7.3-.7.7-1 1.6-1 2.7 0 .8.3 1.6.5 1.8.2.3 2.5 3.9 6 5.3 2.5 1 3 .8 3.5.8.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.6-.4zM12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg><span data-en="Send" data-ar="ابعت الطلب">ابعت الطلب</span></button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast">تم النسخ ✓</div>
+
+<script>
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const hdr=document.getElementById('hdr');
+  addEventListener('scroll',()=>hdr.classList.toggle('on',scrollY>40));
+  document.querySelector('.burger').addEventListener('click',()=>location.href='#start');
+
+  // reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14});
+  document.querySelectorAll('.r').forEach((el,i)=>{el.style.transitionDelay=(i%3*0.07)+'s';io.observe(el)});
+
+  // cursor
+  if(matchMedia('(hover:hover)').matches){
+    const c=document.getElementById('cur');let x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;
+    addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+    (function l(){x+=(tx-x)*.2;y+=(ty-y)*.2;c.style.left=x+'px';c.style.top=y+'px';requestAnimationFrame(l)})();
+    document.querySelectorAll('a,button,[data-h],.chip,.pkg,.opt-row').forEach(el=>{el.addEventListener('mouseenter',()=>c.classList.add('big'));el.addEventListener('mouseleave',()=>c.classList.remove('big'))});
+  }
+
+  // interactive forge word (mouse + scroll rotation) — live lookup so it survives lang change
+  if(!reduce){
+    let ry=0,rx=0,tRy=0,tRx=0,scrollTilt=0;
+    addEventListener('mousemove',e=>{tRy=(e.clientX/innerWidth-.5)*44;tRx=-(e.clientY/innerHeight-.5)*30;});
+    addEventListener('scroll',()=>{scrollTilt=(scrollY*0.35)%360;});
+    (function spin(){
+      ry+=(tRy-ry)*.08;rx+=(tRx-rx)*.08;
+      const fw=document.getElementById('forgeWord');
+      if(fw)fw.style.transform=`perspective(600px) rotateY(${ry+scrollTilt}deg) rotateX(${rx}deg)`;
+      requestAnimationFrame(spin);
+    })();
+  }
+
+  // embers
+  if(!reduce){
+    const cv=document.getElementById('embers'),ctx=cv.getContext('2d');let W,H;
+    const DPR=Math.min(devicePixelRatio,2);
+    function size(){W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px'}
+    size();addEventListener('resize',size);
+    function spawn(){return{x:Math.random()*W,y:H+Math.random()*40,r:(Math.random()*2+.6)*DPR,vy:-(Math.random()*.6+.25)*DPR,vx:(Math.random()-.5)*.3*DPR,life:Math.random()*1,fade:Math.random()*.004+.002}}
+    let parts=[];for(let i=0;i<55;i++){const p=spawn();p.y=Math.random()*H;parts.push(p)}
+    (function draw(){ctx.clearRect(0,0,W,H);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=p.fade;if(p.y<-20||p.life<=0)Object.assign(p,spawn());const a=Math.max(0,Math.min(1,p.life))*.9;const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);g.addColorStop(0,`rgba(255,150,60,${a})`);g.addColorStop(.5,`rgba(255,90,31,${a*.5})`);g.addColorStop(1,'rgba(255,90,31,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,7);ctx.fill()});requestAnimationFrame(draw)})();
+  }
+
+  /* ===== TOOL LOGIC (scoped to #start) ===== */
+  const START=document.getElementById('start');
+  const WHATSAPP="201555014989";
+  const fmt=n=>n.toLocaleString('en-US');
+  let pkg=null;
+  const steps=[...START.querySelectorAll('.step')];
+  const blocks=[...START.querySelectorAll('.block')];
+  function goStep(i){steps.forEach((s,x)=>s.classList.toggle('active',x===i));blocks.forEach((b,x)=>b.classList.toggle('show',x===i));START.scrollIntoView({behavior:'smooth',block:'start'});}
+  steps.forEach((s,i)=>s.addEventListener('click',()=>goStep(i)));
+  START.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{const c=blocks.findIndex(x=>x.classList.contains('show'));goStep(Math.min(c+1,2))}));
+  START.querySelectorAll('[data-prev]').forEach(b=>b.addEventListener('click',()=>{const c=blocks.findIndex(x=>x.classList.contains('show'));goStep(Math.max(c-1,0))}));
+
+  // package type switcher
+  START.querySelectorAll('.pt-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    START.querySelectorAll('.pt-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const type=btn.dataset.type;
+    START.querySelectorAll('.pkg').forEach(p=>{
+      const show=p.dataset.type===type;
+      p.style.display=show?'':'none';
+      if(!show && p.classList.contains('sel')){p.classList.remove('sel');pkg=null;applyLocks([]);}
+    });
+    calc();
+  }));
+  function applyLocks(inc){
+    START.querySelectorAll('#addons .opt-row,#services2 .opt-row').forEach(r=>{
+      const pr=r.querySelector('.pr');
+      if(!r.dataset.origpr)r.dataset.origpr=pr.textContent;
+      if(inc.includes(r.dataset.id)){
+        r.classList.add('locked');r.classList.remove('sel');
+        r.querySelector('.chk').textContent='✓';pr.textContent='ضمن الباقة';
+      }else{
+        r.classList.remove('locked');
+        if(!r.classList.contains('sel'))r.querySelector('.chk').textContent='';
+        pr.textContent=r.dataset.origpr;
+      }
+    });
+  }
+  START.querySelectorAll('.pkg').forEach(p=>p.addEventListener('click',()=>{
+    const on=p.classList.contains('sel');
+    START.querySelectorAll('.pkg').forEach(x=>x.classList.remove('sel'));
+    if(!on){p.classList.add('sel');pkg={name:p.dataset.pkg,price:+p.dataset.price};applyLocks((p.dataset.includes||'').split(','));}
+    else{pkg=null;applyLocks([]);}
+    calc();
+  }));
+  function bindOpts(id){START.querySelectorAll('#'+id+' .opt-row').forEach(r=>r.addEventListener('click',()=>{if(r.classList.contains('locked'))return;r.classList.toggle('sel');r.querySelector('.chk').textContent=r.classList.contains('sel')?'✓':'';calc()}))}
+  bindOpts('addons');bindOpts('services2');bindOpts('printing');
+  function selected(id){return [...START.querySelectorAll('#'+id+' .opt-row.sel')].map(r=>({name:r.dataset.name,price:+r.dataset.price}))}
+  function extras(){return [...selected('addons'),...selected('services2')]}
+  function calc(){let t=pkg?pkg.price:0;extras().forEach(o=>t+=o.price);selected('printing').forEach(o=>t+=o.price);document.getElementById('total').innerHTML=fmt(t)+' <small>جنيه</small>';return t}
+
+  START.querySelectorAll('.q[data-mode] .chip').forEach(c=>c.addEventListener('click',()=>{const q=c.closest('.q');if(q.dataset.mode==='single'){q.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel')}else c.classList.toggle('sel');q.classList.remove('err')}));
+  function readChips(q){return [...q.querySelectorAll('.chip.sel')].map(c=>c.textContent.trim()).join('، ')}
+
+  function build(){
+    const t=calc();let m='🔥 طلب مشروع جديد — FORGE\n\n';
+    m+='📦 الباقة: '+(pkg?pkg.name:'لم تُحدَّد')+'\n';
+    const ad=extras();if(ad.length)m+='➕ إضافات: '+ad.map(o=>o.name).join('، ')+'\n';
+    const pr=selected('printing');if(pr.length)m+='🎨 تصميم مطبوعات: '+pr.map(o=>o.name).join('، ')+'\n';
+    m+='💰 التقدير المبدئي: '+fmt(t)+' جنيه\n\n— — — البريف — — —\n';
+    START.querySelectorAll('.q').forEach(q=>{const key=q.dataset.q;let val='';if(q.dataset.mode)val=readChips(q);else{const f=q.querySelector('[data-field]');val=f?f.value.trim():''}if(val)m+='• '+key+': '+val+'\n'});
+    return m;
+  }
+  function validate(){let ok=true;START.querySelectorAll('.q [data-req]').forEach(f=>{if(!f.value.trim()){f.closest('.q').classList.add('err');ok=false}});if(!pkg)ok=false;return ok}
+
+  document.getElementById('sendBtn').addEventListener('click',()=>{
+    if(!pkg){alert('اختار باقة الأول من خطوة 01 🙏');goStep(0);return;}
+    if(!validate()){goStep(2);alert('اكتب اسمك ورقم موبايلك الأول 🙏');const e=START.querySelector('.q.err');if(e)e.scrollIntoView({behavior:'smooth',block:'center'});return;}
+    window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(build()),'_blank');
+  });
+  document.getElementById('copyBtn').addEventListener('click',async()=>{const msg=build();try{await navigator.clipboard.writeText(msg);toast('تم النسخ ✓')}catch(e){const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('تم النسخ ✓')}});
+  function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
+
+  // show estimate bar only when inside #start; hide floating whatsapp then
+  const bar=document.getElementById('estBar'),waF=document.getElementById('waFloat');
+  new IntersectionObserver(es=>es.forEach(e=>{const inside=e.isIntersecting&&e.intersectionRatio>0.04;bar.classList.toggle('show',inside);waF.classList.toggle('hide',inside);}),{threshold:[0,0.04,0.2]}).observe(START);
+
+  /* ===== theme (light/dark) + language (ar/en) ===== */
+  const themeBtn=document.getElementById('themeBtn'),langBtn=document.getElementById('langBtn');
+  themeBtn.addEventListener('click',()=>document.body.classList.toggle('light'));
+  let lang='ar';
+  function setLang(l){
+    lang=l;
+    document.querySelectorAll('[data-en][data-ar]').forEach(el=>{el.innerHTML=(l==='en'?el.getAttribute('data-en'):el.getAttribute('data-ar'));});
+    langBtn.textContent=(l==='ar'?'EN':'ع');
+    document.documentElement.lang=l;
+  }
+  langBtn.addEventListener('click',()=>setLang(lang==='ar'?'en':'ar'));
+  setLang('ar');
+
+  calc();
+</script>
+</body>
+</html>
