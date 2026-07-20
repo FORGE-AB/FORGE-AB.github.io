@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>قِطعة · أكسسوارات مصنوعة يدويًا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Marhey:wght@400;500;700&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#141210; --ink2:#1E1A16; --bone:#EFE9DE; --bone2:#DCD3C4;
+    --gold:#C79A4B; --gold2:#E0BE79; --rust:#8A4B2E; --mute:#9A9184;
+    --disp:'Marhey',cursive; --body:'Tajawal',sans-serif; --lat:'Playfair Display',serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--bone);font-family:var(--body);line-height:1.7;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--gold);color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,52px)}
+
+  header{position:fixed;inset:0 0 auto 0;z-index:50;transition:.4s}
+  header.on{background:rgba(20,18,16,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(199,154,75,.18)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  header.on .nav{padding:14px 0}
+  .brand{font-family:var(--disp);font-weight:700;font-size:26px;letter-spacing:.02em}
+  .brand span{color:var(--gold)}
+  .nlinks{display:flex;gap:30px;font-size:14px;letter-spacing:.02em;color:var(--mute)}
+  .nlinks a{transition:.3s}.nlinks a:hover{color:var(--gold)}
+  .ncta{border:1px solid var(--gold);color:var(--gold);padding:9px 20px;font-size:13px;letter-spacing:.06em;transition:.3s}
+  .ncta:hover{background:var(--gold);color:var(--ink)}
+  @media(max-width:760px){.nlinks{display:none}}
+
+  .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;
+    background:radial-gradient(120% 90% at 75% 15%,rgba(199,154,75,.14),transparent 55%),var(--ink)}
+  .hero .wrap{position:relative;z-index:3;padding-top:110px;padding-bottom:70px;width:100%}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(30px,6vw,60px);align-items:center}
+  .eyebrow{font-family:var(--disp);font-size:13px;letter-spacing:.14em;color:var(--gold);margin-bottom:24px}
+  .hero h1{font-family:var(--lat);font-weight:700;font-size:clamp(46px,8.6vw,116px);line-height:.98;letter-spacing:-.01em}
+  .hero h1 em{font-style:italic;color:var(--gold);font-weight:500}
+  .hero .sub{font-family:var(--disp);font-size:clamp(18px,2.6vw,26px);margin-top:18px;color:var(--bone2)}
+  .hero p{max-width:400px;margin-top:22px;color:var(--mute);font-size:16px}
+  .hbtns{margin-top:36px;display:flex;gap:16px;flex-wrap:wrap}
+  .btn{font-family:var(--disp);font-size:14px;letter-spacing:.04em;padding:16px 32px;transition:.35s;cursor:pointer;border:none}
+  .btn.solid{background:var(--gold);color:var(--ink);font-weight:500}
+  .btn.solid:hover{background:var(--gold2);transform:translateY(-2px)}
+  .btn.ghost{border:1px solid rgba(239,233,222,.3);color:var(--bone)}
+  .btn.ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .showpiece{aspect-ratio:3/4;position:relative;border:1px solid rgba(199,154,75,.3);
+    background:linear-gradient(160deg,var(--ink2),#0D0B09);display:flex;align-items:center;justify-content:center}
+  .showpiece::after{content:"";position:absolute;inset:14px;border:1px solid rgba(199,154,75,.18)}
+  .ring{width:44%;aspect-ratio:1;border-radius:50%;border:2px solid var(--gold);position:relative;
+    box-shadow:0 0 60px rgba(199,154,75,.25);animation:spin 18s linear infinite}
+  .ring::before{content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,var(--gold2),var(--rust));box-shadow:0 0 24px var(--gold)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media(max-width:820px){.hero-grid{grid-template-columns:1fr}.showpiece{order:-1;aspect-ratio:16/11}.ring{width:32%}}
+
+  section{padding:clamp(70px,11vw,130px) 0}
+  .lbl{font-family:var(--disp);font-size:13px;letter-spacing:.12em;color:var(--gold);margin-bottom:26px}
+
+  .marq{border-top:1px solid rgba(199,154,75,.2);border-bottom:1px solid rgba(199,154,75,.2);padding:20px 0;overflow:hidden;white-space:nowrap}
+  .marq .track{display:inline-flex;gap:52px;font-family:var(--lat);font-style:italic;font-size:26px;color:var(--mute);animation:scroll 22s linear infinite}
+  .marq .track span{color:var(--gold);opacity:.6}
+  @keyframes scroll{to{transform:translateX(50%)}}
+
+  .collection h2{font-family:var(--lat);font-weight:700;font-size:clamp(30px,5.4vw,64px);line-height:1.02;margin-bottom:8px}
+  .collection h2 em{font-style:italic;color:var(--gold)}
+  .col-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:48px}
+  .col-head p{color:var(--mute);max-width:360px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .prod{position:relative;border:1px solid rgba(239,233,222,.1);transition:.4s;overflow:hidden}
+  .prod:hover{border-color:var(--gold);transform:translateY(-6px)}
+  .prod .img{aspect-ratio:1;background:linear-gradient(155deg,var(--ink2),#0C0A08);display:flex;align-items:center;justify-content:center;position:relative}
+  .prod .img .sh{width:46%;aspect-ratio:1;border:1.5px solid var(--gold);border-radius:50%;opacity:.7;transition:.5s}
+  .prod:nth-child(2) .img .sh{border-radius:8px;transform:rotate(45deg)}
+  .prod:nth-child(3) .img .sh{border-radius:50% 50% 50% 4px}
+  .prod:nth-child(4) .img .sh{width:30%;border-radius:0;height:56%;aspect-ratio:auto}
+  .prod:nth-child(5) .img .sh{border-radius:50%;width:30%}
+  .prod:nth-child(6) .img .sh{border-radius:8px}
+  .prod:hover .img .sh{transform:scale(1.1) rotate(8deg);opacity:1;box-shadow:0 0 40px rgba(199,154,75,.3)}
+  .prod:nth-child(2):hover .img .sh{transform:scale(1.1) rotate(53deg)}
+  .prod .meta{padding:18px 20px;display:flex;justify-content:space-between;align-items:baseline}
+  .prod .nm{font-family:var(--disp);font-size:17px}
+  .prod .pr{font-family:var(--lat);color:var(--gold);font-size:18px}
+  .badge{position:absolute;top:14px;inset-inline-start:14px;font-family:var(--disp);font-size:11px;letter-spacing:.08em;background:var(--gold);color:var(--ink);padding:3px 10px;z-index:2}
+
+  .story{background:var(--ink2)}
+  .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,80px);align-items:center}
+  @media(max-width:820px){.story-grid{grid-template-columns:1fr}}
+  .story h2{font-family:var(--lat);font-weight:700;font-size:clamp(28px,4.6vw,52px);line-height:1.12}
+  .story h2 em{font-style:italic;color:var(--gold)}
+  .story p{color:var(--mute);margin-top:18px;font-size:16.5px}
+  .story .sig{font-family:var(--lat);font-style:italic;font-size:24px;color:var(--gold);margin-top:24px;direction:ltr;text-align:right}
+  .frame{aspect-ratio:1;border:1px solid rgba(199,154,75,.3);position:relative;display:flex;align-items:center;justify-content:center}
+  .frame .word{font-family:var(--lat);font-style:italic;font-size:clamp(40px,7vw,90px);color:rgba(199,154,75,.25)}
+
+  .cta{text-align:center;background:radial-gradient(100% 120% at 50% 0%,rgba(199,154,75,.12),transparent 60%)}
+  .cta h2{font-family:var(--lat);font-weight:700;font-size:clamp(32px,6vw,80px);line-height:1}
+  .cta h2 em{font-style:italic;color:var(--gold)}
+  .cta p{color:var(--mute);margin:18px auto 32px;max-width:400px}
+
+  footer{border-top:1px solid rgba(199,154,75,.2);padding:40px 0;font-size:14px;color:var(--mute)}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+  footer .brand{font-size:22px}
+  .demo-flag{position:fixed;bottom:14px;inset-inline-start:14px;z-index:99;background:var(--gold);color:var(--ink);font-family:var(--disp);font-size:12px;padding:7px 14px;border-radius:100px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+</style>
+</head>
+<body>
+<div class="demo-flag">نموذج ديمو · FORGE</div>
+<header id="hd">
+  <div class="wrap nav">
+    <div class="brand">قِطعة<span>.</span></div>
+    <nav class="nlinks">
+      <a href="#collection">التشكيلة</a>
+      <a href="#story">حكايتنا</a>
+      <a href="#cta">تسوّق</a>
+    </nav>
+    <a href="#collection" class="ncta">تسوّقي الآن</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">أكسسوارات مصنوعة يدويًا · مصر</div>
+        <h1>كل قطعة<br/><em>لها حكاية</em>.</h1>
+        <div class="sub">تصميمات محدودة، مصنوعة بإيد.</div>
+        <p>مش مجرد أكسسوار — قطعة فنية تفضل معاكِ. نشتغل كل تصميم بإيدينا من خامات مختارة بعناية.</p>
+        <div class="hbtns">
+          <button class="btn solid">تسوّقي التشكيلة</button>
+          <button class="btn ghost">اعرفي أكتر</button>
+        </div>
+      </div>
+      <div class="showpiece"><div class="ring"></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="marq">
+  <div class="track">
+    <span>✦</span> صناعة يدوية <span>✦</span> خامات أصلية <span>✦</span> تصميمات محدودة <span>✦</span> شحن لكل المحافظات <span>✦</span> صناعة يدوية <span>✦</span> خامات أصلية <span>✦</span> تصميمات محدودة <span>✦</span>
+  </div>
+</div>
+
+<section class="collection" id="collection">
+  <div class="wrap">
+    <div class="col-head">
+      <div>
+        <div class="lbl">التشكيلة الجديدة</div>
+        <h2>مجموعة <em>الخريف</em></h2>
+      </div>
+      <p>ست قطع محدودة، كل واحدة اتصنعت لمرة واحدة. أول ما تخلص، تخلص.</p>
+    </div>
+    <div class="grid">
+      <div class="prod"><span class="badge">جديد</span><div class="img"><div class="sh"></div></div><div class="meta"><span class="nm">خاتم النخيل</span><span class="pr">٤٥٠ ج</span></div></div>
+      <div class="prod"><div class="img"><div class="sh"></div></div><div class="meta"><span class="nm">قلادة الشمس</span><span class="pr">٦٢٠ ج</span></div></div>
+      <div class="prod"><span class="badge">الأكثر طلبًا</span><div class="img"><div class="sh"></div></div><div class="meta"><span class="nm">حلق القمر</span><span class="pr">٣٨٠ ج</span></div></div>
+      <div class="prod"><div class="img"><div class="sh"></div></div><div class="meta"><span class="nm">إسورة الرمل</span><span class="pr">٥٤٠ ج</span></div></div>
+      <div class="prod"><div class="img"><div class="sh"></div></div><div class="meta"><span class="nm">دبلة الموج</span><span class="pr">٤٩٠ ج</span></div></div>
+      <div class="prod"><span class="badge">آخر قطعة</span><div class="img"><div class="sh"></div></div><div class="meta"><span class="nm">تعليقة الليل</span><span class="pr">٧١٠ ج</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="story" id="story">
+  <div class="wrap story-grid">
+    <div>
+      <div class="lbl">حكايتنا</div>
+      <h2>بدأنا من <em>مشغل صغير</em>،<br/>والباقي حكاية.</h2>
+      <p>قِطعة بدأت شغف بنت واحدة بالتصميم. كل قطعة بنشتغلها بنفكّر فيها كأنها لبنتنا — من اختيار الخامة لحد آخر لمسة. عشان كده كل قطعة عندنا مختلفة، ومحدش هيلاقي زيها.</p>
+      <div class="sig">— Handcrafted with love</div>
+    </div>
+    <div class="frame"><div class="word">قِطعة</div></div>
+  </div>
+</section>
+
+<section class="cta" id="cta">
+  <div class="wrap">
+    <div class="lbl" style="text-align:center">جاهزة تختاري قطعتك؟</div>
+    <h2>لاقي القطعة<br/><em>اللي تشبهك</em>.</h2>
+    <p>اتصفّحي التشكيلة كاملة واطلبي أونلاين. شحن لكل محافظات مصر خلال ٢–٤ أيام.</p>
+    <button class="btn solid">تسوّقي الآن</button>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand">قِطعة<span style="color:var(--gold)">.</span></div>
+    <div>تابعينا · إنستجرام · تيك توك</div>
+    <div>© 2026 · صُنع بواسطة FORGE</div>
+  </div>
+</footer>
+
+<script>
+  addEventListener('scroll',()=>document.getElementById('hd').classList.toggle('on',scrollY>40));
+</script>
+</body>
+</html>

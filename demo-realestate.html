@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مَرْسى · تطوير عقاري</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=El+Messiri:wght@400;500;600;700&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --navy:#0F1A24; --navy2:#16242F; --sand:#E7DECE; --sand2:#D2C6B0;
+    --bronze:#B08A54; --bronze2:#D0AC74; --teal:#2E5A56; --mute:#8695A0; --paper:#F6F2EA;
+    --disp:'El Messiri',sans-serif; --body:'Tajawal',sans-serif; --lat:'Fraunces',serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--navy);color:var(--sand);font-family:var(--body);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--bronze);color:var(--navy)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 clamp(20px,5vw,52px)}
+
+  #loader{position:fixed;inset:0;z-index:200;background:var(--navy);display:flex;align-items:center;justify-content:center;transition:opacity .8s .3s,visibility .8s .3s;overflow:hidden}
+  #loader.done{opacity:0;visibility:hidden}
+  #loader .m{font-family:var(--lat);font-size:clamp(40px,9vw,90px);color:var(--bronze);letter-spacing:.04em}
+  #loader .rise{position:absolute;bottom:0;left:0;width:100%;height:0;background:var(--navy2);animation:fill 1s .2s forwards}
+  @keyframes fill{to{height:100%}}
+
+  header{position:fixed;inset:0 0 auto 0;z-index:60;transition:.4s}
+  header.on{background:rgba(15,26,36,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(176,138,84,.16)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  header.on .nav{padding:14px 0}
+  .brand{font-family:var(--lat);font-weight:600;font-size:26px;color:var(--bronze);letter-spacing:.02em}
+  .nlinks{display:flex;gap:6px}
+  .tab{font-family:var(--body);font-size:15px;color:var(--sand2);padding:8px 18px;border-radius:100px;cursor:pointer;transition:.3s;background:none;border:none}
+  .tab:hover{color:var(--bronze)}.tab.active{color:var(--navy);background:var(--bronze)}
+  .ncta{border:1px solid var(--bronze);color:var(--bronze);padding:9px 22px;font-size:14px;transition:.35s;border-radius:100px}
+  .ncta:hover{background:var(--bronze);color:var(--navy)}
+  @media(max-width:820px){.tab{padding:8px 12px;font-size:14px}.ncta{display:none}}
+
+  .view{display:none;animation:fade .6s ease}
+  .view.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
+  .hero .skyline{position:absolute;bottom:0;left:0;width:100%;height:44%;z-index:0;opacity:.5;
+    background:linear-gradient(180deg,transparent,rgba(176,138,84,.06));
+    -webkit-mask:linear-gradient(180deg,transparent,#000);mask:linear-gradient(180deg,transparent,#000)}
+  .hero .glow{position:absolute;width:640px;height:640px;border-radius:50%;top:-8%;left:-6%;
+    background:radial-gradient(closest-side,rgba(176,138,84,.14),transparent 70%);filter:blur(16px)}
+  .hero .wrap{position:relative;z-index:2}
+  .eyebrow{font-family:var(--lat);font-size:clamp(15px,2vw,20px);color:var(--bronze);margin-bottom:22px;opacity:0;animation:rise .9s .4s forwards}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  .hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(46px,9vw,128px);line-height:.98;opacity:0;animation:rise 1s .55s forwards}
+  .hero h1 em{font-style:normal;color:var(--bronze)}
+  .hero p{max-width:460px;margin-top:24px;color:var(--sand2);font-size:17px;opacity:0;animation:rise 1s .75s forwards}
+  .hbtns{margin-top:38px;display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:rise 1s .9s forwards}
+  .btn{font-family:var(--body);font-size:15px;padding:15px 32px;border-radius:100px;transition:.4s;cursor:pointer;border:none;font-weight:500}
+  .btn.solid{background:var(--bronze);color:var(--navy)}
+  .btn.solid:hover{background:var(--bronze2);transform:translateY(-2px);box-shadow:0 14px 40px rgba(176,138,84,.3)}
+  .btn.ghost{border:1px solid rgba(231,222,206,.3);color:var(--sand)}
+  .btn.ghost:hover{border-color:var(--bronze);color:var(--bronze)}
+  .counters{position:absolute;bottom:34px;left:0;width:100%;z-index:2}
+  .counters .wrap{display:flex;gap:48px;flex-wrap:wrap}
+  .cnt .num{font-family:var(--lat);font-size:clamp(30px,4vw,52px);color:var(--bronze);line-height:1}
+  .cnt .c{font-size:13px;color:var(--mute);letter-spacing:.04em}
+
+  section{padding:clamp(70px,11vw,130px) 0;position:relative}
+  .lbl{font-family:var(--lat);font-size:20px;color:var(--bronze);margin-bottom:22px}
+  .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,80px);align-items:center}
+  @media(max-width:820px){.intro-grid{grid-template-columns:1fr}}
+  .intro h2{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4.6vw,54px);line-height:1.1}
+  .intro h2 em{font-style:normal;color:var(--bronze)}
+  .intro p{color:var(--sand2);margin-top:18px;font-size:16.5px}
+  .tower{aspect-ratio:3/4;background:linear-gradient(160deg,var(--navy2),#0A1219);border:1px solid rgba(176,138,84,.25);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:26px}
+  .tower::before{content:"";position:absolute;inset:0;background:
+    repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(176,138,84,.08) 22px,rgba(176,138,84,.08) 24px),
+    repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(176,138,84,.08) 28px,rgba(176,138,84,.08) 30px)}
+  .tower .t{position:relative;font-family:var(--lat);font-size:22px;color:var(--sand)}
+
+  /* projects view */
+  .p-hero{padding:150px 0 30px}
+  .p-hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(38px,7vw,86px);color:var(--bronze)}
+  .p-hero p{color:var(--sand2);max-width:440px;margin-top:10px}
+  .units{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding-bottom:30px}
+  @media(max-width:900px){.units{grid-template-columns:1fr 1fr}}
+  @media(max-width:600px){.units{grid-template-columns:1fr}}
+  .unit{border:1px solid rgba(231,222,206,.12);border-radius:14px;overflow:hidden;transition:.4s;cursor:pointer;background:var(--navy2)}
+  .unit:hover{transform:translateY(-8px);border-color:var(--bronze);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .unit .ph{aspect-ratio:4/3;position:relative;background:linear-gradient(150deg,#132029,#0B131A);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .unit .ph::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(60deg,transparent,transparent 30px,rgba(176,138,84,.06) 30px,rgba(176,138,84,.06) 32px)}
+  .unit .ph .icon{font-family:var(--lat);font-size:44px;color:rgba(176,138,84,.4);position:relative}
+  .unit .tag{position:absolute;top:14px;inset-inline-start:14px;font-family:var(--body);font-size:12px;background:var(--bronze);color:var(--navy);padding:3px 12px;border-radius:100px;z-index:2}
+  .unit .body{padding:22px}
+  .unit h3{font-family:var(--disp);font-size:22px}
+  .unit .loc{color:var(--mute);font-size:14px;margin-top:2px}
+  .unit .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:14px;border-top:1px solid rgba(231,222,206,.1)}
+  .unit .price{font-family:var(--lat);font-size:20px;color:var(--bronze)}
+  .unit .specs{font-size:13px;color:var(--sand2)}
+
+  /* contact view */
+  .c-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,70px);align-items:center;padding-top:120px}
+  @media(max-width:820px){.c-grid{grid-template-columns:1fr}}
+  .c-grid h1{font-family:var(--disp);font-weight:700;font-size:clamp(36px,6vw,76px);line-height:1.02}
+  .c-grid h1 em{font-style:normal;color:var(--bronze)}
+  .form{background:var(--navy2);border:1px solid rgba(176,138,84,.2);border-radius:18px;padding:34px}
+  .field{margin-bottom:18px}
+  .field label{font-size:14px;color:var(--bronze);display:block;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;background:var(--navy);border:1px solid rgba(176,138,84,.25);border-radius:8px;padding:13px 14px;color:var(--sand);font-family:var(--body);font-size:15px}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--bronze)}
+  .cinfo{margin-top:26px}
+  .cinfo .row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(176,138,84,.15)}
+  .cinfo .k{color:var(--mute)}.cinfo .v{font-family:var(--lat);color:var(--sand)}
+
+  footer{border-top:1px solid rgba(176,138,84,.2);padding:40px 0;font-size:14px;color:var(--mute)}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+  footer .brand{font-size:22px}
+  .demo-flag{position:fixed;bottom:14px;inset-inline-start:14px;z-index:99;background:var(--bronze);color:var(--navy);font-family:var(--disp);font-size:12px;padding:7px 14px;border-radius:100px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<div id="loader"><div class="rise"></div><div class="m">مَرْسى</div></div>
+<div class="demo-flag">نموذج ديمو · FORGE</div>
+
+<header id="hd">
+  <div class="wrap nav">
+    <div class="brand">مَرْسى</div>
+    <nav class="nlinks">
+      <button class="tab active" data-v="home">الرئيسية</button>
+      <button class="tab" data-v="projects">المشاريع</button>
+      <button class="tab" data-v="contact">تواصل</button>
+    </nav>
+    <button class="ncta" data-v="contact">احجز معاينة</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<div class="view show" id="home">
+  <section class="hero">
+    <div class="glow"></div><div class="skyline"></div>
+    <div class="wrap">
+      <div class="eyebrow">تطوير عقاري · منذ ٢٠٠٨</div>
+      <h1>بيوت تُبنى<br/><em>لتبقى</em>.</h1>
+      <p>مش بس وحدات سكنية — مجتمعات متكاملة صُممت عشان تعيش فيها أجيال. من أول الطوبة لآخر لمسة، بنبني بضمير.</p>
+      <div class="hbtns">
+        <button class="btn solid" data-v="projects">شوف المشاريع</button>
+        <button class="btn ghost" data-v="contact">احجز معاينة</button>
+      </div>
+    </div>
+    <div class="counters">
+      <div class="wrap">
+        <div class="cnt"><div class="num">+٤٢</div><div class="c">مشروع مكتمل</div></div>
+        <div class="cnt"><div class="num">+١٨ ألف</div><div class="c">عائلة سعيدة</div></div>
+        <div class="cnt"><div class="num">١٦</div><div class="c">سنة خبرة</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap intro-grid">
+      <div class="reveal">
+        <div class="lbl">من نحن</div>
+        <h2>نبني المكان،<br/>و<em>الحياة</em> تكمّل.</h2>
+        <p>في مَرْسى بنؤمن إن البيت أكتر من جدران. عشان كده بنهتمّ بأدق التفاصيل — المساحات الخضرا، الإضاءة الطبيعية، وجودة الخامات — عشان كل يوم في بيتك يبقى أحلى.</p>
+      </div>
+      <div class="tower reveal"><div class="t">مشروع<br/>الواجهة</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- PROJECTS -->
+<div class="view" id="projects">
+  <div class="wrap p-hero reveal">
+    <h1>مشاريعنا</h1>
+    <p>اختار من مجموعة متنوعة من الوحدات في أرقى مناطق القاهرة الجديدة والساحل.</p>
+  </div>
+  <div class="wrap">
+    <div class="units">
+      <div class="unit reveal"><div class="ph"><span class="tag">متاح</span><span class="icon">◈</span></div><div class="body"><h3>ريزيدنس الواحة</h3><div class="loc">التجمع الخامس</div><div class="row"><span class="specs">٣ غرف · ١٨٠م²</span><span class="price">٥.٢ م</span></div></div></div>
+      <div class="unit reveal"><div class="ph"><span class="tag">جديد</span><span class="icon">◆</span></div><div class="body"><h3>تاون هاوس النخيل</h3><div class="loc">الشيخ زايد</div><div class="row"><span class="specs">٤ غرف · ٢٦٠م²</span><span class="price">٨.٧ م</span></div></div></div>
+      <div class="unit reveal"><div class="ph"><span class="tag">قريبًا</span><span class="icon">▲</span></div><div class="body"><h3>شاليهات المرسى</h3><div class="loc">الساحل الشمالي</div><div class="row"><span class="specs">٢ غرفة · ١٢٠م²</span><span class="price">٤.٥ م</span></div></div></div>
+      <div class="unit reveal"><div class="ph"><span class="tag">متاح</span><span class="icon">◇</span></div><div class="body"><h3>بنتهاوس الأفق</h3><div class="loc">العاصمة الإدارية</div><div class="row"><span class="specs">٥ غرف · ٣٤٠م²</span><span class="price">١٢ م</span></div></div></div>
+      <div class="unit reveal"><div class="ph"><span class="tag">متاح</span><span class="icon">❖</span></div><div class="body"><h3>استوديو المدينة</h3><div class="loc">مدينة نصر</div><div class="row"><span class="specs">غرفة · ٧٥م²</span><span class="price">٢.٣ م</span></div></div></div>
+      <div class="unit reveal"><div class="ph"><span class="tag">جديد</span><span class="icon">⬡</span></div><div class="body"><h3>فيلا الحديقة</h3><div class="loc">التجمع الأول</div><div class="row"><span class="specs">٦ غرف · ٥٠٠م²</span><span class="price">٢٤ م</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="view" id="contact">
+  <div class="wrap c-grid">
+    <div class="reveal">
+      <div class="lbl">تواصل معنا</div>
+      <h1>خلّينا<br/><em>نلاقيلك بيتك</em>.</h1>
+      <div class="cinfo">
+        <div class="row"><span class="k">المكتب الرئيسي</span><span class="v">التجمع الخامس، القاهرة</span></div>
+        <div class="row"><span class="k">تليفون</span><span class="v">16 XXX</span></div>
+        <div class="row"><span class="k">مواعيد العمل</span><span class="v">السبت – الخميس · ٩–٧</span></div>
+      </div>
+    </div>
+    <div class="form reveal">
+      <div class="field"><label>الاسم</label><input type="text" placeholder="اسمك الكريم"/></div>
+      <div class="field"><label>الموبايل</label><input type="tel" placeholder="01x xxxx xxxx"/></div>
+      <div class="field"><label>المشروع المهتم بيه</label><select><option>ريزيدنس الواحة</option><option>تاون هاوس النخيل</option><option>شاليهات المرسى</option><option>غير محدد</option></select></div>
+      <div class="field"><label>رسالتك</label><textarea rows="3" placeholder="احكيلنا عن اللي بتدوّر عليه"></textarea></div>
+      <button class="btn solid" style="width:100%">اطلب معاينة</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="brand">مَرْسى</div>
+    <div>تطوير عقاري · القاهرة</div>
+    <div>© 2026 · صُنع بواسطة FORGE</div>
+  </div>
+</footer>
+
+<script>
+  setTimeout(()=>document.getElementById('loader').classList.add('done'),1200);
+  addEventListener('scroll',()=>document.getElementById('hd').classList.toggle('on',scrollY>40));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+  function watchReveals(){document.querySelectorAll('.reveal').forEach(el=>io.observe(el));}
+  watchReveals();
+  const views=document.querySelectorAll('.view'),tabs=document.querySelectorAll('.tab');
+  function go(v){views.forEach(x=>x.classList.toggle('show',x.id===v));tabs.forEach(t=>t.classList.toggle('active',t.dataset.v===v));scrollTo({top:0,behavior:'smooth'});setTimeout(watchReveals,50);}
+  document.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.v)));
+</script>
+</body>
+</html>
